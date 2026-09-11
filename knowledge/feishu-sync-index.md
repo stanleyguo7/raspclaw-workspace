@@ -8,6 +8,7 @@
 |---|---|---|---|---|
 | 旅行知识库 | `knowledge/travel/feishu-sync.md` | [旅行知识库](https://pcnxtxkyc5c6.feishu.cn/docx/RV1KdxJuQoCUNpxMVIbcecy9nRc) | `8fd98c3` | 国内外目的地、官方来源与旅行偏好；用户账号已授予完全访问权限。 |
 | 北京美食餐厅推荐 | `knowledge/food/feishu-sync.md` | [北京美食餐厅推荐](https://pcnxtxkyc5c6.feishu.cn/docx/Ywgod7ZQioZ6VNx9dmocK9hknYe) | `10515b7` | 望京、后沙峪/龙湾及专程餐厅；当前由机器人创建，个人协作权限需单独确认后授予。 |
+| 北京近期活动（2026-09-11） | `knowledge/events/beijing-current-2026-09-11.md` | [北京近期活动](https://pcnxtxkyc5c6.feishu.cn/docx/OQOYdqy7xo0stGxKUp0cQoWInTf) | 待本次提交 | 今晚至本周末的已核验活动快照；时效内容需按活动页复核。 |
 
 ## 同步约定
 
