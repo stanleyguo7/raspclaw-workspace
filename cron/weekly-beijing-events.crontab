@@ -1,0 +1,4 @@
+# Every Thursday at 11:00 Asia/Shanghai. Install with:
+# crontab cron/weekly-beijing-events.crontab
+CRON_TZ=Asia/Shanghai
+0 11 * * 4 /home/guosq/workspace/raspclaw-workspace/scripts/weekly-beijing-events.sh
