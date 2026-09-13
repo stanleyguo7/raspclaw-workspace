@@ -24,6 +24,8 @@
 | 标准 SSH | `22` | — | 未开启；日常使用 Termux 的 `8022` |
 | Samba | `//192.168.3.115/Share` | 匿名 | 可见 `Storage` 与 `1ABE6CDDBE6CB345` |
 
+轻量下载服务的使用和维护方法见 [`z10pro-download-service.md`](./z10pro-download-service.md)。
+
 Termux 的 Android 应用 UID 会在卸载重装后变化，因此 `u0_a76` 不是永久值。可用以下命令重新确认：
 
 ```bash
