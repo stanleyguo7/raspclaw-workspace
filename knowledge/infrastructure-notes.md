@@ -4,6 +4,7 @@
 
 - 阿里云 ECS：`ssh root@aliyun-ecs`
 - 若连接失败：优先检查 `~/.ssh/config`、DNS/hosts 别名解析
+- ZIDOO Z10 Pro：见 [`z10pro-access.md`](./z10pro-access.md)
 
 ## RSS 服务（阿里云）
 
