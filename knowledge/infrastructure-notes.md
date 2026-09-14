@@ -1,5 +1,7 @@
 # Infrastructure Notes
 
+局域网设备、地址、角色及服务入口统一维护在 [`lan-machines.md`](./lan-machines.md)。
+
 ## SSH
 
 - 阿里云 ECS：`ssh root@aliyun-ecs`
