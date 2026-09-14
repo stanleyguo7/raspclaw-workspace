@@ -1,6 +1,6 @@
 # 局域网机器与服务清单
 
-最后核对：2026-09-14
+最后核对：2026-09-15
 
 网段：`192.168.3.0/24`
 
@@ -12,7 +12,7 @@
 | --- | --- | --- | --- | --- |
 | `rasp2` | `192.168.3.119`（有线） | ARM64、4 核、8 GB RAM、32 GB 系统盘 | OpenClaw、AList、rclone、Music Assistant、自动化与运维节点 | `ssh guosq@rasp2` 或 `ssh guosq@192.168.3.119` |
 | `rasp` | `192.168.3.254`（有线，优先）、`192.168.3.150`（Wi-Fi） | ARM64、4 核、4 GB RAM、32 GB 系统盘 | Home Assistant、Docker 服务 | `ssh guosq@rasp` 或 `ssh guosq@192.168.3.254` |
-| `istoreos` | `192.168.3.253` | iStoreOS/OpenWrt，配置待登录后补充 | 旁路由 | `ssh root@192.168.3.253` |
+| `istoreos` | `192.168.3.253` | GL.iNet GL-MT3000、ARM64、约 512 MB RAM、iStoreOS 21.02.4 | 旁路由 | 从 rasp2 执行 `ssh root@192.168.3.253`，已配置公钥认证 |
 | `z10pro` | `192.168.3.115` | ZIDOO Z10 Pro、Android 9、6 核、2 GB RAM、32 GB 闪存 | 本地影音、外接硬盘、Samba、aria2 下载 | ADB root、Termux SSH、Samba；详见 [`z10pro-access.md`](./z10pro-access.md) |
 
 ### 地址说明
@@ -64,7 +64,14 @@ ssh guosq@192.168.3.254
 ssh root@192.168.3.253
 ```
 
-2026-09-14 检查结果：SSH `22` 端口开放；从 rasp2 进行非交互公钥登录时被拒绝，说明 rasp2 的公钥尚未授权，或该设备仍要求密码。不要将 root 密码写入仓库；后续应优先给 rasp2 配置专用 SSH 公钥。
+2026-09-15 已通过 `rasp2 → rasp → istoreos` 的现有信任链，将 rasp2 的 `~/.ssh/id_rsa.pub` 加入 iStoreOS。现已验证 rasp2 可直接以 root 公钥登录；私钥没有离开 rasp2，也没有写入仓库。
+
+设备信息：
+
+- 型号：GL.iNet GL-MT3000
+- 架构：MediaTek MT7981 / ARM64 Cortex-A53
+- 系统：iStoreOS 21.02.4，revision `2024101112`
+- 内核：Linux 5.4.211
 
 ### Z10 Pro
 
@@ -98,7 +105,7 @@ adb -s 192.168.3.115:5555 shell
 - `rasp2`：系统盘约 29 GB，已使用约 62%，当前负载较低。
 - `rasp`：系统盘约 29 GB，已使用约 88%，应优先清理或迁移 Docker 日志、镜像及缓存。
 - `z10pro`：外接硬盘约 3.6 TiB，已使用约 81%；Android 内存较小，不适合承载核心基础设施。
-- `istoreos`：承担旁路由职责，新增服务时应避免影响 DNS、代理和网络转发。
+- `istoreos`：承担旁路由职责，新增服务时应避免影响 DNS、代理和网络转发。其 `/overlay` 约 125 MB，已使用约 92%，新增插件前应先清理或扩容。
 
 ## 维护约定
 
