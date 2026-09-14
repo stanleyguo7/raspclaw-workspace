@@ -26,6 +26,8 @@
 
 轻量下载服务的使用和维护方法见 [`z10pro-download-service.md`](./z10pro-download-service.md)。
 
+外接硬盘加密保险库的使用和恢复方法见 [`z10pro-secure-vault.md`](./z10pro-secure-vault.md)。
+
 Termux 的 Android 应用 UID 会在卸载重装后变化，因此 `u0_a76` 不是永久值。可用以下命令重新确认：
 
 ```bash
