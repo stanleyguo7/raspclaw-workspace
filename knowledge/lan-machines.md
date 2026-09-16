@@ -14,6 +14,7 @@
 | `rasp` | `192.168.3.254`（有线，优先）、`192.168.3.150`（Wi-Fi） | ARM64、4 核、4 GB RAM、32 GB 系统盘 | Home Assistant、Docker 服务 | `ssh guosq@rasp` 或 `ssh guosq@192.168.3.254` |
 | `istoreos` | `192.168.3.253` | GL.iNet GL-MT3000、ARM64、约 512 MB RAM、iStoreOS 21.02.4 | 旁路由 | 从 rasp2 执行 `ssh root@192.168.3.253`，已配置公钥认证 |
 | `z10pro` | `192.168.3.115` | ZIDOO Z10 Pro、Android 9、6 核、2 GB RAM、32 GB 闪存 | 本地影音、外接硬盘、Samba、aria2 下载 | ADB root、Termux SSH、Samba；详见 [`z10pro-access.md`](./z10pro-access.md) |
+| 小度闺蜜机 | `192.168.3.48` | 待确认 | 小度智能屏/家庭终端 | 待确认 |
 
 ### 地址说明
 
