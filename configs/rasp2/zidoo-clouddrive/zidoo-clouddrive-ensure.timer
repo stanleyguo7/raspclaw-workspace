@@ -1,0 +1,12 @@
+[Unit]
+Description=Check Zidoo CloudDrive2 mount periodically
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+Persistent=true
+Unit=zidoo-clouddrive-ensure.service
+
+[Install]
+WantedBy=timers.target
+

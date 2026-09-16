@@ -1,0 +1,9 @@
+[Unit]
+Description=Ensure Zidoo CloudDrive2 root mount is available
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/zidoo-clouddrive-ensure
+

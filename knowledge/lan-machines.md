@@ -1,6 +1,6 @@
 # 局域网机器与服务清单
 
-最后核对：2026-09-15
+最后核对：2026-09-16
 
 网段：`192.168.3.0/24`
 
@@ -10,7 +10,7 @@
 
 | 名称 | IP 地址 | 系统/配置 | 主要角色 | 访问方式 |
 | --- | --- | --- | --- | --- |
-| `rasp2` | `192.168.3.119`（有线） | ARM64、4 核、8 GB RAM、32 GB 系统盘 | OpenClaw、AList、rclone、Music Assistant、自动化与运维节点 | `ssh guosq@rasp2` 或 `ssh guosq@192.168.3.119` |
+| `rasp2` | `192.168.3.119`（有线） | ARM64、4 核、8 GB RAM、32 GB 系统盘 | OpenClaw、AList、rclone、Music Assistant、Zidoo CloudDrive2 挂载守护、自动化与运维节点 | `ssh guosq@rasp2` 或 `ssh guosq@192.168.3.119` |
 | `rasp` | `192.168.3.254`（有线，优先）、`192.168.3.150`（Wi-Fi） | ARM64、4 核、4 GB RAM、32 GB 系统盘 | Home Assistant、Docker 服务 | `ssh guosq@rasp` 或 `ssh guosq@192.168.3.254` |
 | `istoreos` | `192.168.3.253` | GL.iNet GL-MT3000、ARM64、约 512 MB RAM、iStoreOS 21.02.4 | 旁路由 | 从 rasp2 执行 `ssh root@192.168.3.253`，已配置公钥认证 |
 | `z10pro` | `192.168.3.115` | ZIDOO Z10 Pro、Android 9、6 核、2 GB RAM、32 GB 闪存 | 本地影音、外接硬盘、Samba、aria2 下载 | ADB root、Termux SSH、Samba；详见 [`z10pro-access.md`](./z10pro-access.md) |
@@ -31,6 +31,7 @@
 | Home Assistant | `http://192.168.3.254:8123` | `rasp` | 有线主入口；`.150:8123` 是同机 Wi-Fi 地址 |
 | AList Web | `http://192.168.3.119:5244` | `rasp2` | AList 管理与文件入口 |
 | AList WebDAV | `http://192.168.3.119:5244/dav` | `rasp2` | Apple TV/Infuse 等客户端使用；需要 AList 账号 |
+| Zidoo CloudDrive2 挂载守护 | `zidoo-clouddrive-ensure.timer` | `rasp2` | 每 2 分钟检查 Zidoo root FUSE 挂载；不开放新端口 |
 | Z10 Pro ADB | `192.168.3.115:5555` | `z10pro` | 已授权后可执行 `adb root`；只在可信内网使用 |
 | Z10 Pro Termux SSH | `192.168.3.115:8022` | `z10pro` | 用户 `u0_a76`，仅密钥认证 |
 | Z10 Pro aria2 RPC | `http://192.168.3.115:6800/jsonrpc` | `z10pro` | 需要 RPC 密钥；详见 [`z10pro-download-service.md`](./z10pro-download-service.md) |
@@ -106,6 +107,10 @@ adb -s 192.168.3.115:5555 shell
 - `rasp`：系统盘约 29 GB，已使用约 88%，应优先清理或迁移 Docker 日志、镜像及缓存。
 - `z10pro`：外接硬盘约 3.6 TiB，已使用约 81%；Android 内存较小，不适合承载核心基础设施。
 - `istoreos`：承担旁路由职责，新增服务时应避免影响 DNS、代理和网络转发。其 `/overlay` 约 125 MB，已使用约 92%，新增插件前应先清理或扩容。
+
+## 已停用服务
+
+- `rasp2` Samba：2026-09-16 已停止并禁用 `smbd`、`nmbd`、`winbind`、`samba-ad-dc`，不再监听 UDP 137/138 或 TCP 139/445。
 
 ## 维护约定
 
