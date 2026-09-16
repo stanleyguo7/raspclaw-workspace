@@ -31,4 +31,3 @@ if ! "$ADB" -s "$ZIDOO" shell "test -d '$APP_MOUNT/movie'"; then
     mount --bind $MOUNT $APP_MOUNT
   " >/dev/null
 fi
-

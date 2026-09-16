@@ -9,4 +9,3 @@ Unit=zidoo-clouddrive-ensure.service
 
 [Install]
 WantedBy=timers.target
-

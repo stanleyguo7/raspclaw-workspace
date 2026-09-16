@@ -117,4 +117,3 @@ sudo systemctl enable --now smbd nmbd winbind
 - CloudDrive2 挂载为只读，避免播放器或海报墙误改网盘内容。
 - Zidoo ADB root 仅在可信局域网使用。
 - 修改 AList WebDAV 策略后，应验证 302 的目标是夸克 CDN，并确认 Zidoo 建立了外部 HTTPS 连接。
-
