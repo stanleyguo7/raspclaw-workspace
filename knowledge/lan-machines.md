@@ -6,6 +6,8 @@
 
 本文是家庭局域网设备地址与访问入口的事实清单。只记录主机名、IP、角色、端口和认证方式，不记录密码、私钥、Cookie、Token 或恢复码。敏感信息应放入加密保险库，参见 [`z10pro-secure-vault.md`](./z10pro-secure-vault.md)。
 
+摄像机、门口机和 NVR 地址单独维护在 [`security-cameras.md`](./security-cameras.md)。
+
 ## 已确认的机器
 
 | 名称 | IP 地址 | 系统/配置 | 主要角色 | 访问方式 |
