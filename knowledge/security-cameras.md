@@ -50,6 +50,40 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 
 院门门铃 `192.168.3.81` 未接入该 NVR，继续使用独立 Generic Camera 实体。
 
+## Hikvision 事件链路诊断
+
+2026-09-24 对 NVR、Home Assistant 集成和代表性摄像机进行了实测。
+
+### 当前状态
+
+- Home Assistant `2026.2.2` 使用核心 `hikvision` 集成，底层依赖 `pyHik 0.4.2`，通过 `/ISAPI/Event/notification/alertStream` 接收本地推送。
+- NVR 的 `/ISAPI/Event/triggers` 中，频道 1-12 的 `VMD`（移动侦测）均只配置了 `record` 联动，没有 `center` 或 `HTTP` 联动。
+- 连续监听 NVR 事件流 30 秒只收到 3 次 `videoloss/inactive` 心跳，没有收到报警事件；HA 最近 24 小时内 12 个 motion 实体也没有一次 `on` 记录。
+- 这说明实时连接本身正常，但当前 NVR 只按事件录像，没有把报警上传到事件流。HA 中存在 binary sensor 实体不等于 NVR 正在推送对应事件。
+
+### 智能类型未区分的原因
+
+1. 当前录像机是 `DS-7916N-R4(C)`，不是带 AcuSense 分析能力的 `NXI` 系列。它能集中录像和转发普通事件，但不能依靠录像机自身为所有通道补充人/车分类。
+2. 摄像机端实际具备一定分类能力。实测移动侦测配置中：`DS-2CD1245-LA` 和 `DS-2CD1345V2-LA` 的 `targetType` 为 `human`；`.84` 的 `DS-2SC3Q144MY-TE` 为 `human,vehicle`。这些标签没有通过当前 NVR 的通用 `VMD` 事件完整传递给 HA。
+3. `pyHik 0.4.2` 使用固定事件映射。`VMD` 统一映射成 `Motion`，不会在 HA 中拆成人/车实体，也不暴露 `targetType`。
+4. NVR 还声明了 `personDensityDetection`、`objectsThrownDetection`、`channelOccupy` 和 `ChannelPassingEvent` 等事件，但它们不在当前 `pyHik` 的事件映射中。HA 会根据 NVR trigger 配置创建这些实体，实时解析器遇到未知类型时却会丢弃事件，因此这些实体不能视为已经可用。
+
+### 修复顺序
+
+1. 在 NVR 每个需要监测的频道中保留“触发录像”，同时启用“上传中心/通知监控中心”，并核对布防时间；使 trigger 的 `notificationMethod` 至少包含 `center`。
+2. 核对 HA 使用的海康账号具有“远程：通知监控中心/触发报警输出”权限，并保持 Web 认证为 `digest/basic`。
+3. 重新加载 Hikvision 集成后，现场触发一个频道；先确认 alert stream 出现 `VMD active/inactive` 和正确频道，再确认对应 HA motion 实体产生 `on/off` 历史。
+4. 人/车分类不要依赖当前 HA binary sensor。若要保留摄像机的 `targetType`，应在 `rasp2` 运行独立 ISAPI 事件桥接，解析原始事件并发布为 MQTT/HA 事件；或使用支持该字段的新版本解析器/自定义集成。直接修改 HA 容器内核心文件会在升级时丢失，不作为长期方案。
+5. 若设备事件报文仍不带目标类别，再使用 NVR 事件录像作为候选片段，由 OpenCV 规则初筛后提交 AI 分析。
+
+参考资料：
+
+- [Home Assistant Hikvision 集成](https://www.home-assistant.io/integrations/hikvision)
+- [Hikvision ISAPI Event Notification Alert 结构](https://open.hikvision.com/hardware/v2/XML%E6%96%87%E4%BB%B6/XML_EventNotificationAlert.html)
+- [Hikvision Notify Surveillance Center 说明](https://enpinfo.hikvision.com/hkwsen/unzip/20230410194813_20373_doc/GUID-242A4133-7B2F-4AE3-A56B-21A9581ED330.html)
+- [DS-7900N-R4(C) 规格表](https://dealer-static.hikvision.com/upload/file/doc/DOC000091742-DS-7900N-R4%28C%29_20230308.pdf)
+- [pyHik 事件解析源码](https://github.com/mezz64/pyHik/blob/master/pyhik/hikvision.py)
+
 ## 其他摄像机
 
 | IP 地址 | 名称 | 型号 | Home Assistant 状态 |
