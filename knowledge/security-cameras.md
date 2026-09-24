@@ -10,16 +10,18 @@
 | --- | --- | --- | --- | --- | --- |
 | `192.168.3.2` | 前院门口 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_2` | 在线；JPEG/HLS 正常 |
 | `192.168.3.3` | 前院长椅 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_3` | 在线；JPEG/HLS 正常 |
-| `192.168.3.10` | 东侧走廊 | IP 摄像机 | 待确认 | `camera.192_168_3_10` | 在线；JPEG/HLS 正常 |
+| `192.168.3.4` | 侧院设备区 | IP 摄像机 | `DS-2CD1245-LA` | `camera.network_video_recorder_pin_dao_12` | 在线；NVR 频道 JPEG/实时流正常 |
+| `192.168.3.10` | 东侧走廊 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_10` | 在线；JPEG/HLS 正常 |
 | `192.168.3.81` | 院门门铃 | 室外门口机 | `DS-KVJ203` | `camera.192_168_3_81` | 在线；JPEG/HLS 正常 |
-| `192.168.3.83` | 前院 | IP 摄像机 | 待确认 | `camera.192_168_3_83` | 在线；JPEG/HLS 正常 |
-| `192.168.3.84` | 车库门口 | IP 摄像机 | 待确认 | `camera.192_168_3_84` | 在线；JPEG/HLS 正常 |
-| `192.168.3.85` | 车库屋顶 | IP 摄像机 | 待确认 | `camera.192_168_3_85` | 在线；JPEG/HLS 正常 |
-| `192.168.3.86` | 后院 | IP 摄像机 | 待确认 | `camera.192_168_3_86` | 在线；JPEG/HLS 正常 |
-| `192.168.3.87` | 北侧走廊 | IP 摄像机 | 待确认 | `camera.192_168_3_87` | 在线；JPEG/HLS 正常 |
-| `192.168.3.88` | 车库内 | IP 摄像机 | 待确认 | `camera.192_168_3_88` | 在线；JPEG/HLS 正常 |
-| `192.168.3.89` | 侧院设备区 | IP 摄像机 | 待确认 | `camera.192_168_3_89` 直连不可用；看板使用 NVR 频道 12 | 局域网直连不可达；NVR 频道 JPEG/实时流正常 |
-| `192.168.3.90` | 二楼露台 | IP 摄像机 | 待确认 | `camera.192_168_3_90` | 在线；JPEG/HLS 正常 |
+| `192.168.3.83` | 前院 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_83` | 在线；JPEG/HLS 正常 |
+| `192.168.3.84` | 车库门口/车库门口云台 | 双画面 IP 摄像机 | `DS-2SC3Q144MY-TE` | NVR 频道 8、9 | 在线；两路 NVR 画面正常 |
+| `192.168.3.85` | 车库屋顶 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_85` | 在线；JPEG/HLS 正常 |
+| `192.168.3.86` | 后院 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_86` | 在线；JPEG/HLS 正常 |
+| `192.168.3.87` | 北侧走廊 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_87` | 在线；JPEG/HLS 正常 |
+| `192.168.3.88` | 车库内 | IP 摄像机 | `DS-2CD1345V2-LA` | `camera.192_168_3_88` | 在线；JPEG/HLS 正常 |
+| `192.168.3.90` | 二楼露台 | IP 摄像机 | `DS-2CD1245-LA` | `camera.192_168_3_90` | 在线；JPEG/HLS 正常 |
+
+侧院设备区摄像机原记录地址为 `192.168.3.89`，该地址已不可达；NVR 当前报告的新地址为 `192.168.3.4`。
 
 ## 录像机
 
@@ -31,20 +33,22 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 
 ### NVR 频道映射
 
-| NVR 频道 | 名称/位置 | Home Assistant 实体 |
-| --- | --- | --- |
-| 1 | 北侧走廊 | `camera.network_video_recorder_pin_dao_1` |
-| 2 | 前院长椅 | `camera.network_video_recorder_pin_dao_2` |
-| 3 | 后院 | `camera.network_video_recorder_pin_dao_3` |
-| 4 | 前院 | `camera.network_video_recorder_pin_dao_4` |
-| 5 | 车库内 | `camera.network_video_recorder_pin_dao_5` |
-| 6 | 东侧走廊 | `camera.network_video_recorder_pin_dao_6` |
-| 7 | 二楼露台 | `camera.network_video_recorder_pin_dao_7` |
-| 8 | 车库门口 | `camera.network_video_recorder_pin_dao_8` |
-| 9 | 院门门铃 | `camera.network_video_recorder_pin_dao_9` |
-| 10 | 车库屋顶 | `camera.network_video_recorder_pin_dao_10` |
-| 11 | 前院门口 | `camera.network_video_recorder_pin_dao_11` |
-| 12 | 侧院设备区 | `camera.network_video_recorder_pin_dao_12` |
+| NVR 频道 | 源 IP | 名称/位置 | Home Assistant 实体 |
+| --- | --- | --- | --- |
+| 1 | `192.168.3.87` | 北侧走廊 | `camera.network_video_recorder_pin_dao_1` |
+| 2 | `192.168.3.3` | 前院长椅 | `camera.network_video_recorder_pin_dao_2` |
+| 3 | `192.168.3.86` | 后院 | `camera.network_video_recorder_pin_dao_3` |
+| 4 | `192.168.3.83` | 前院 | `camera.network_video_recorder_pin_dao_4` |
+| 5 | `192.168.3.88` | 车库内 | `camera.network_video_recorder_pin_dao_5` |
+| 6 | `192.168.3.10` | 东侧走廊 | `camera.network_video_recorder_pin_dao_6` |
+| 7 | `192.168.3.90` | 二楼露台 | `camera.network_video_recorder_pin_dao_7` |
+| 8 | `192.168.3.84` | 车库门口 | `camera.network_video_recorder_pin_dao_8` |
+| 9 | `192.168.3.84` | 车库门口云台 | `camera.network_video_recorder_pin_dao_9` |
+| 10 | `192.168.3.85` | 车库屋顶 | `camera.network_video_recorder_pin_dao_10` |
+| 11 | `192.168.3.2` | 前院门口 | `camera.network_video_recorder_pin_dao_11` |
+| 12 | `192.168.3.4` | 侧院设备区 | `camera.network_video_recorder_pin_dao_12` |
+
+院门门铃 `192.168.3.81` 未接入该 NVR，继续使用独立 Generic Camera 实体。
 
 ## 其他摄像机
 
@@ -54,7 +58,8 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 
 ## 视频接入约定
 
-- Home Assistant 主机：`192.168.3.254`。监控看板使用 Hikvision 集成提供的 NVR 频道 1-11；原 Generic Camera 实体继续保留，供 HomeKit 和故障回退使用。
+- Home Assistant 主机：`192.168.3.254`。监控看板使用 Hikvision 集成提供的 NVR 频道 1-12，并保留独立的 `.81` 院门门铃画面。
+- 原 Generic Camera 实体继续保留作故障回退；`.81` 因未接入 NVR，仍作为当前使用实体。
 - `.2`、`.3`、`.81` 使用新版海康主码流路径 `/Streaming/Channels/101`。
 - `.10`、`.83`-`.90` 已知设备使用旧版路径 `/h264/ch1/main/av_stream`。
 - 静态图像使用 Hikvision ISAPI 通道 `101` 抓图。
@@ -65,9 +70,9 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 
 - 摄像头专用桥接名称：`HA Surveillance`，端口 `21068`。
 - 配置来源：`rasp:/home/guosq/homeassistant/configuration.yaml` 中的 `homekit` / `HA Surveillance` 段。
-- 当前桥接 11 个在线实体：`.2`、`.3`、`.10`、`.81`、`.83`、`.84`、`.85`、`.86`、`.87`、`.88`、`.90`。
-- 离线的 `.89` 不加入 HomeKit Bridge。
-- 2026-09-24 已将 HomeKit 显示名称从“摄像头 1～9”更新为本文记录的实际位置名称，并成功执行 `homekit.reload`。
+- 当前桥接 13 个画面实体：Hikvision NVR 频道 1-12，以及未接入 NVR 的 `.81` 院门门铃。
+- 频道 8 和 9 都来自 `.84`，分别显示“车库门口”和“车库门口云台”。
+- 2026-09-24 已将桥接从 Generic Camera 切换到上述 Hikvision 频道，并成功执行配置检查和 `homekit.reload`。
 - Home Assistant 会警告多个摄像头放在单一 bridge 中的性能不如每台独立 accessory；当前为避免重新逐台配对，保留既有单桥结构。
 
 ## 维护约定
