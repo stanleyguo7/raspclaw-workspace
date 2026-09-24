@@ -48,6 +48,37 @@ vacuum.return_to_base
 
 设备还提供地图、当前房间、清扫状态、电量/耗材、拖布模式和勿扰模式等实体。各机器也有预设清扫按钮，例如“全屋清洁”“先扫后拖”“精细慢拖”和“强力扫地”。执行用户未明确要求的强力模式、拖地模式或跨区域清扫前，应先确认。
 
+### 上次清扫时间
+
+每台机器人均提供上次清扫开始和结束时间戳。实体命名规则如下：
+
+```text
+sensor.<机器人实体基本名>_last_clean_begin
+sensor.<机器人实体基本名>_last_clean_end
+```
+
+当前实体映射：
+
+| 位置 | 上次开始实体 | 上次结束实体 |
+| --- | --- | --- |
+| 地下室/B1 洗衣房 | `sensor.g30s_pro_b1_last_clean_begin` | `sensor.g30s_pro_b1_last_clean_end` |
+| 一楼 | `sensor.g30s_pro_yi_lou_last_clean_begin` | `sensor.g30s_pro_yi_lou_last_clean_end` |
+| 二楼公区、儿童房 | `sensor.p20_ultra_plus_er_ceng_gong_qu_last_clean_begin` | `sensor.p20_ultra_plus_er_ceng_gong_qu_last_clean_end` |
+| 二楼主卧 | `sensor.p20_ultra_plus_er_lou_zhu_wo_last_clean_begin` | `sensor.p20_ultra_plus_er_lou_zhu_wo_last_clean_end` |
+
+HA 返回 ISO 8601 UTC 时间；展示给用户时转换为 `Asia/Shanghai`（UTC+8）。
+
+## 标准操作流程
+
+1. 按“自然语言路由”选择目标 vacuum 实体。
+2. 调用前读取 `/api/states/<vacuum 实体>`，确认实体不是 `unavailable`，并检查是否已经在清扫。
+3. 用户明确授权清扫后，向 `/api/services/vacuum/start` 提交目标 `entity_id`。
+4. 再读取 vacuum 实体和对应的 `binary_sensor.<基本名>_cleaning`，确认机器人已进入清扫状态；若未启动，报告实际状态，不重复连续下发命令。
+5. 暂停或回充分别调用 `/api/services/vacuum/pause`、`/api/services/vacuum/return_to_base`，随后同样复核状态。
+6. 查询历史时读取上述 `last_clean_begin` / `last_clean_end` 实体，将 UTC 转为北京时间后返回；两者之差可作为最近一次清扫时长。
+
+认证使用 Home Assistant 的受保护凭据；Token、Roborock 账号和设备密钥不得写入命令日志、聊天或 Git。
+
 ## 调用约定
 
 1. 启动前读取目标 vacuum 实体状态；若为 `unavailable`，不要下发命令，并报告设备离线。
