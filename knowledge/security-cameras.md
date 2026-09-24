@@ -29,6 +29,23 @@
 
 NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道，不应把 NVR 本身记为一台独立摄像头。
 
+### NVR 频道映射
+
+| NVR 频道 | 名称/位置 | Home Assistant 实体 |
+| --- | --- | --- |
+| 1 | 北侧走廊 | `camera.network_video_recorder_pin_dao_1` |
+| 2 | 前院长椅 | `camera.network_video_recorder_pin_dao_2` |
+| 3 | 后院 | `camera.network_video_recorder_pin_dao_3` |
+| 4 | 前院 | `camera.network_video_recorder_pin_dao_4` |
+| 5 | 车库内 | `camera.network_video_recorder_pin_dao_5` |
+| 6 | 东侧走廊 | `camera.network_video_recorder_pin_dao_6` |
+| 7 | 二楼露台 | `camera.network_video_recorder_pin_dao_7` |
+| 8 | 车库门口 | `camera.network_video_recorder_pin_dao_8` |
+| 9 | 院门门铃 | `camera.network_video_recorder_pin_dao_9` |
+| 10 | 车库屋顶 | `camera.network_video_recorder_pin_dao_10` |
+| 11 | 前院门口 | `camera.network_video_recorder_pin_dao_11` |
+| 12 | 未使用 | `camera.network_video_recorder_pin_dao_12`，无有效画面 |
+
 ## 其他摄像机
 
 | IP 地址 | 名称 | 型号 | Home Assistant 状态 |
@@ -37,7 +54,7 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 
 ## 视频接入约定
 
-- Home Assistant 主机：`192.168.3.254`，摄像机使用 Generic Camera 直连设备 RTSP。
+- Home Assistant 主机：`192.168.3.254`。监控看板使用 Hikvision 集成提供的 NVR 频道 1-11；原 Generic Camera 实体继续保留，供 HomeKit 和故障回退使用。
 - `.2`、`.3`、`.81` 使用新版海康主码流路径 `/Streaming/Channels/101`。
 - `.10`、`.83`-`.90` 已知设备使用旧版路径 `/h264/ch1/main/av_stream`。
 - 静态图像使用 Hikvision ISAPI 通道 `101` 抓图。
