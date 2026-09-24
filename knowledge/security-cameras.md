@@ -18,7 +18,7 @@
 | `192.168.3.86` | 后院 | IP 摄像机 | 待确认 | `camera.192_168_3_86` | 在线；JPEG/HLS 正常 |
 | `192.168.3.87` | 北侧走廊 | IP 摄像机 | 待确认 | `camera.192_168_3_87` | 在线；JPEG/HLS 正常 |
 | `192.168.3.88` | 车库内 | IP 摄像机 | 待确认 | `camera.192_168_3_88` | 在线；JPEG/HLS 正常 |
-| `192.168.3.89` | 待确认摄像机 | IP 摄像机 | 待确认 | `camera.192_168_3_89` | 离线；已从监控看板隐藏 |
+| `192.168.3.89` | 侧院设备区 | IP 摄像机 | 待确认 | `camera.192_168_3_89` 直连不可用；看板使用 NVR 频道 12 | 局域网直连不可达；NVR 频道 JPEG/实时流正常 |
 | `192.168.3.90` | 二楼露台 | IP 摄像机 | 待确认 | `camera.192_168_3_90` | 在线；JPEG/HLS 正常 |
 
 ## 录像机
@@ -44,7 +44,7 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 | 9 | 院门门铃 | `camera.network_video_recorder_pin_dao_9` |
 | 10 | 车库屋顶 | `camera.network_video_recorder_pin_dao_10` |
 | 11 | 前院门口 | `camera.network_video_recorder_pin_dao_11` |
-| 12 | 未使用 | `camera.network_video_recorder_pin_dao_12`，无有效画面 |
+| 12 | 侧院设备区 | `camera.network_video_recorder_pin_dao_12` |
 
 ## 其他摄像机
 
