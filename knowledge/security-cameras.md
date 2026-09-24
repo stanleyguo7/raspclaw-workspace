@@ -57,9 +57,10 @@ NVR 的 `192.168.3.12` 可返回视频通道，但该画面属于录像机通道
 ### 当前状态
 
 - Home Assistant `2026.2.2` 使用核心 `hikvision` 集成，底层依赖 `pyHik 0.4.2`，通过 `/ISAPI/Event/notification/alertStream` 接收本地推送。
-- NVR 的 `/ISAPI/Event/triggers` 中，频道 1-12 的 `VMD`（移动侦测）均只配置了 `record` 联动，没有 `center` 或 `HTTP` 联动。
-- 连续监听 NVR 事件流 30 秒只收到 3 次 `videoloss/inactive` 心跳，没有收到报警事件；HA 最近 24 小时内 12 个 motion 实体也没有一次 `on` 记录。
-- 这说明实时连接本身正常，但当前 NVR 只按事件录像，没有把报警上传到事件流。HA 中存在 binary sensor 实体不等于 NVR 正在推送对应事件。
+- 初次检查时，NVR 频道 1-12 的 `VMD`（移动侦测）均只配置了 `record` 联动，没有 `center` 或 `HTTP` 联动；连续监听事件流 30 秒只收到 3 次 `videoloss/inactive` 心跳，HA 最近 24 小时内也没有 motion 触发。
+- 20:57 复查时，频道 3（后院）和频道 11（前院门口）已增加 `center`，其余频道仍只有 `record`。HA 已收到频道 11 一次、频道 3 三次完整的 `on/off` 移动事件，证明 NVR → ISAPI event stream → HA 链路正常。
+- 频道 11 于 20:27:56 触发、20:28:36 恢复；频道 3 于 20:55:49、20:56:20、20:56:56 三次触发，最后于 20:57:26 恢复。时间均为 `Asia/Shanghai`。
+- 因此，HA 中存在 binary sensor 实体不等于 NVR 正在推送对应事件；每个需要实时事件的频道都必须配置 `center`。
 
 ### 智能类型未区分的原因
 
