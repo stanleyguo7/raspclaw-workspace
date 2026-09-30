@@ -1,6 +1,6 @@
 # 家庭视频监控与 NVR 基线
 
-最后核对：2026-09-30
+最后核对：2026-10-01
 
 本文记录摄像机、海康 NVR、Home Assistant 与 HomeKit 的当前接入状态，以及近期误报调整。禁止记录用户名、密码、Token 或带认证信息的完整 URL。
 
@@ -61,6 +61,11 @@
 - 备份：
   - `/home/guosq/homeassistant/backups/manual-config/hikvision-ch3-motion-20260930-094555.xml`
   - `/home/guosq/homeassistant/backups/manual-config/hikvision-nvr-ch3-motion-20260930-094628.xml`
+
+2026-10-01 二次调整：首次缩区后仅在本地时间 19:36 和 00:33 各误报一次。进一步移除顶部横向区域和底部桌布/椅子边缘，只保留左右实际通行带；摄像机与 NVR 检测区域同步缩至 `88/396`，继续保留 `human`、灵敏度 `20`、录像计划及 `record + center` 联动。调整前备份：
+
+- `/home/guosq/homeassistant/backups/manual-config/hikvision-ch3-motion-20261001-065804-before-second-tune.xml`
+- `/home/guosq/homeassistant/backups/manual-config/hikvision-nvr-ch3-motion-20261001-065826-before-second-tune.xml`
 
 ### 频道 11：门口/前院门口
 
