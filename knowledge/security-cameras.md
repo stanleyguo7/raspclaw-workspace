@@ -77,6 +77,11 @@
   - `/home/guosq/homeassistant/backups/manual-config/hikvision-ch11-motion-20260930-100922.xml`
   - `/home/guosq/homeassistant/backups/manual-config/hikvision-nvr-ch11-motion-20260930-100922.xml`
 
+2026-10-01 二次调整：当天 10:44–11:03 连续触发 14 次，12:12 又触发 1 次；现场画面显示上午强烈树影覆盖下半部空地。摄像机与 NVR 检测区域由 `234/396` 缩至 `144/396`，移除右侧大面积树影地面，只保留左侧门口及接近门口的通行带；继续保留 `human`、灵敏度 `20`、录像计划及 `record + center` 联动。调整前备份：
+
+- `/home/guosq/homeassistant/backups/manual-config/hikvision-camera-ch11-motion-20261001-130705-before-second-tune.xml`
+- `/home/guosq/homeassistant/backups/manual-config/hikvision-nvr-ch11-motion-20261001-130705-before-second-tune.xml`
+
 ### 后续观察顺序
 
 1. 先观察后续夜间误报数。
