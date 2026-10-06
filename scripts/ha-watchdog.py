@@ -62,6 +62,7 @@ YEELIGHT = {
 }
 
 HOMEKIT_PORTS = (21064, 21068)
+WEATHER_ENTRY_ID = "01KPWSJQ20MFPFQEGFGCDY99ZK"
 
 
 def log(event: str, **data: object) -> None:
@@ -217,6 +218,16 @@ def main() -> int:
                 mark_action(state, f"yeelight_{floor}", now)
                 state["counters"][f"yeelight_{floor}"] = 0
                 notify("易来集成自动恢复", f"{floor.upper()} 网关在线但实体不可用，已安全重载一次集成。")
+
+    weather_failed = states.get("weather.shunyi") in {"unknown", "unavailable", None}
+    count = bump(state, "weather_shunyi", weather_failed)
+    if count >= FAILURE_THRESHOLD and cooldown_ready(state, "weather_shunyi", now):
+        log("weather_reload_planned", entity_id="weather.shunyi", dry_run=args.dry_run)
+        if not args.dry_run:
+            service("homeassistant", "reload_config_entry", {"entry_id": WEATHER_ENTRY_ID})
+            mark_action(state, "weather_shunyi", now)
+            state["counters"]["weather_shunyi"] = 0
+            notify("天气服务自动恢复", "顺义天气连续不可用，已安全重载天气配置项。")
 
     missing_ports = [port for port in HOMEKIT_PORTS if not tcp_open("192.168.3.254", port)]
     count = bump(state, "homekit", bool(missing_ports))
