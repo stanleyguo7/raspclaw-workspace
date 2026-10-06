@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Home Assistant external watchdog every two minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+AccuracySec=20s
+Persistent=true
+Unit=ha-watchdog.service
+
+[Install]
+WantedBy=timers.target

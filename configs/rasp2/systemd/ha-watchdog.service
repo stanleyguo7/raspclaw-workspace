@@ -1,0 +1,15 @@
+[Unit]
+Description=External Home Assistant health and recovery watchdog
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=guosq
+Group=guosq
+ExecStart=/usr/bin/python3 /home/guosq/workspace/raspclaw-workspace/scripts/ha-watchdog.py
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target
