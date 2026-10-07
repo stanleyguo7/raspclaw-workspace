@@ -1,0 +1,13 @@
+[Unit]
+Description=Record rasp2 host health for reboot diagnosis
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=guosq
+Group=guosq
+ExecStart=/usr/bin/python3 /home/guosq/workspace/raspclaw-workspace/scripts/rasp2-host-monitor.py
+Nice=15
+IOSchedulingClass=idle
+MemoryMax=64M
+TasksMax=16
