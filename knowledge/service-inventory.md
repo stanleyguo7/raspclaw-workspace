@@ -30,7 +30,7 @@
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
 | 夸克只读 HTTP 桥 | user systemd | 本机 `127.0.0.1:8787`；认证 LAN `192.168.3.119:8788` | `quark-rclone-http.service`、`quark-rclone-lan-http.service` | 本机桥供旧任务，LAN 桥供 Zidoo aria2 Range 读取；LAN 桥强制 Basic Auth |
-| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 新任务编排 Zidoo aria2，支持暂停、继续、取消、删除、Jellyfin 刷新与刮削；旧分片任务仍可恢复 |
+| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 新任务编排 Zidoo aria2，支持暂停、继续、取消、删除；下载后刷新 Jellyfin，并用去分类字母/清晰度标记的中英文候选重试元数据，只有年份完全一致才自动应用封面；旧分片任务仍可恢复 |
 | Zidoo aria2 看门狗 | user systemd timer | 每 2 分钟 | `z10pro-aria2-ensure.timer` | 验证认证 RPC，异常时通过 Termux RunCommandService 恢复服务 |
 | Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
