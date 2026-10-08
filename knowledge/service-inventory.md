@@ -131,3 +131,6 @@ systemctl --user status ha-backup-sync.timer
 - 华为 Mesh 路由集成偶发 `auth_general`，应优先重认证而非恢复旧 Ping 节点。
 - Yeelight Pro 1.04 仍有未来 HA 版本兼容警告；当前已加色温零值保护，升级集成后需确认补丁是否仍存在。
 - 摄像头集中在一个 HomeKit bridge 可用，但 HA 会建议按 accessory 模式拆分；属于后续优化项。
+- 天气与 Xiaomi Miot 依赖外部接口，现由 `binary_sensor.external_data_services_healthy` 综合监控；连续异常 15 分钟才通知，恢复稳定 10 分钟后通知。
+- 海康集成会发现设备不支持的高级事件类型；49 个持续不可用的事件实体已禁用，核心摄像、移动侦测和 NVR 故障状态不受影响。
+- 烟雾传感器暂未接入，用户增加设备前不列为主动巡检提醒。
