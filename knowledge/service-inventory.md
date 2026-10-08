@@ -24,13 +24,13 @@
 | 服务 | 运行方式 | 入口/端口 | 主要数据或配置 | 说明 |
 |---|---|---|---|---|
 | OpenClaw Gateway | user systemd | 本机控制面；经 Tailscale 访问 | `~/.openclaw` | 当前智能助手主节点 |
-| Stanley FunHub | user systemd | `http://192.168.3.119:8790` | `/home/guosq/workspace/stanley-funhub` | 家庭娱乐资讯总入口 |
+| Stanley FunHub | user systemd | 首页 `http://192.168.3.119:8790`；下载 `/downloads/` | `/home/guosq/workspace/stanley-funhub` | 娱乐资讯与夸克→Zidoo 下载的统一入口/进程 |
 | Jellyfin | Docker，host 网络 | `http://192.168.3.119:8096` | `/home/guosq/services/jellyfin/config` | 只保留 Zidoo 本地媒体库；Swiftfin 客户端使用 |
 | Music Assistant | Docker，host 网络 | Web `8095`；Stream `8097`；附加端口 `8927` | workspace `services/music-assistant/data` | 音乐库与播放器编排 |
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
 | 夸克只读 HTTP 桥 | user systemd | 仅本机 `127.0.0.1:8787` | `quark-rclone-http.service` | 为下载管理器提供 Range 读取 |
-| 夸克→Zidoo 管理器 | user systemd | `http://192.168.3.119:8788` | workspace `quark-zidoo-manager` | 文件/文件夹下载、暂停续传、删除、Jellyfin 刷新与刮削 |
+| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 文件/文件夹下载、暂停续传、删除、Jellyfin 刷新与刮削；旧 8788 服务已停用 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
 
@@ -81,7 +81,7 @@
 1. 网络基础：主路由、iStoreOS、DNS/代理。
 2. rasp：Docker → MQTT → Home Assistant → go2rtc → HomeKit bridges。
 3. Zidoo Samba 挂载：先确认只读/可写路径均可访问。
-4. rasp2：rclone/AList → 夸克 HTTP 桥 → 下载管理器 → Jellyfin/Music Assistant → FunHub。
+4. rasp2：rclone/AList → 夸克 HTTP 桥 → FunHub（含下载模块）→ Jellyfin/Music Assistant。
 5. 最后检查 HA 备份同步 timer 与最近一次结果。
 
 ## 4. 快速检查
@@ -102,8 +102,8 @@ docker ps
 systemctl --user --no-pager --type=service --state=running
 curl -fsS http://127.0.0.1:8096/System/Info/Public >/dev/null
 curl -fsS http://127.0.0.1:8095/ >/dev/null
-curl -fsS http://127.0.0.1:8788/ >/dev/null
 curl -fsS http://127.0.0.1:8790/ >/dev/null
+curl -fsS http://127.0.0.1:8790/downloads/health >/dev/null
 systemctl --user status ha-backup-sync.timer
 ```
 
