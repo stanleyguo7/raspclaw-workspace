@@ -1,0 +1,11 @@
+[Unit]
+Description=Check Zidoo aria2 every two minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+AccuracySec=20s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

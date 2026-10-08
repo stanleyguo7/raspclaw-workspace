@@ -1,0 +1,8 @@
+[Unit]
+Description=Ensure Zidoo Termux aria2 service is available
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/guosq/workspace/raspclaw-workspace/scripts/z10pro-aria2-ensure.sh
+TimeoutStartSec=45

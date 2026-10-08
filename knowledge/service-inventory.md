@@ -29,8 +29,9 @@
 | Music Assistant | Docker，host 网络 | Web `8095`；Stream `8097`；附加端口 `8927` | workspace `services/music-assistant/data` | 音乐库与播放器编排 |
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
-| 夸克只读 HTTP 桥 | user systemd | 仅本机 `127.0.0.1:8787` | `quark-rclone-http.service` | 为下载管理器提供 Range 读取 |
-| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 文件/文件夹下载、暂停续传、删除、Jellyfin 刷新与刮削；旧 8788 服务已停用 |
+| 夸克只读 HTTP 桥 | user systemd | 本机 `127.0.0.1:8787`；认证 LAN `192.168.3.119:8788` | `quark-rclone-http.service`、`quark-rclone-lan-http.service` | 本机桥供旧任务，LAN 桥供 Zidoo aria2 Range 读取；LAN 桥强制 Basic Auth |
+| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 新任务编排 Zidoo aria2，支持暂停续传、删除、Jellyfin 刷新与刮削；旧分片任务仍可恢复 |
+| Zidoo aria2 看门狗 | user systemd timer | 每 2 分钟 | `z10pro-aria2-ensure.timer` | 验证认证 RPC，异常时通过 Termux RunCommandService 恢复服务 |
 | Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
@@ -46,7 +47,7 @@
 ### Zidoo Z10 Pro — 播放与存储（192.168.3.115）
 
 - 外接盘通过 Samba 提供媒体文件；rasp2 同时维护只读和可写挂载。
-- Jellyfin 从只读挂载读取 `Movie`；下载管理器向可写挂载写入。
+- Jellyfin 从只读挂载读取 `Movie`；aria2 先写 `Downloads/aria2` 暂存目录，完成后同盘移动到 `Movie`。
 - 新下载内容默认进入 `Movie`，完成后触发 Jellyfin 刷新/元数据处理。
 - HA 受保护备份放在隐藏目录 `Movie/.HomeAssistantBackups`，避免进入媒体库。
 
@@ -62,12 +63,17 @@
 
 ### 本地影视
 
-`夸克/AList → rclone HTTP bridge → 下载管理器 → Zidoo Movie → Jellyfin → Swiftfin/Apple TV`
+`夸克/AList → 认证 rclone HTTP bridge → Zidoo aria2 → 同盘移动到 Movie → Jellyfin → Swiftfin/Apple TV`
 
 - Jellyfin 不直接扫描夸克网盘，只扫描 Zidoo 本地文件。
 - 4K 播放优先直放；TrueHD/PGS 可能触发转码或字幕烧录，rasp2 不适合重型 4K 软件转码。
 
 ### 下载失败恢复
+
+- 新任务使用 Zidoo 本机 aria2 的 Range 分段和 `.aria2` 断点文件，不需要下载完成后的分片合并；播放期间单任务限速 4 MiB/s，结束后恢复不限速。
+- aria2 只能直接写外接盘授权过的 `Downloads/aria2`，不能直接写 `Movie`；FunHub 完成后通过 ADB 同盘移动，属于元数据操作，速度近乎即时。
+- `z10pro-aria2-ensure.timer` 每两分钟检查 RPC；Termux/aria2 异常时自动恢复。rasp2 本机的冗余 aria2 已禁用。
+- 以下 12 次分片重试、合并与 SMB 回退规则仅适用于迁移前创建、没有 `engine=aria2` 的旧任务。
 
 - 单个分片最多自动重试 12 次，适合处理夸克直链短暂超时或连接重置。
 - 整个任务遇到网络、I/O、挂载短暂中断等可恢复故障时，最多再重试 5 次，退避为 30、60、120、240、480 秒。

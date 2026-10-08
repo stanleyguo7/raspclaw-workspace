@@ -1,6 +1,6 @@
 # Z10 Pro 轻量下载服务
 
-最后验证：2026-09-14
+最后验证：2026-10-08
 
 ## 概览
 
@@ -15,6 +15,11 @@ Z10 Pro 的 Termux 中运行 aria2 1.37.0，由 `termux-services`/runit 监管�
 - 断点与任务会话：每 60 秒保存一次
 - 服务配置：`~/.config/aria2/aria2.conf`
 - 日志：`~/.local/state/aria2/aria2.log`
+
+FunHub 新任务使用的实际链路为：认证只读夸克 HTTP 桥 → Zidoo aria2 →
+`Downloads/aria2/.funhub-<job>` 暂存目录 → 同盘原子移动到 `Movie`。Termux
+对可移动盘的 `Downloads/aria2` 有写权限，但不能直接在 `Movie` 新建文件，因此
+不能把 aria2 的 `dir` 直接设为 `Movie`。
 
 该服务只提供 JSON-RPC，没有安装公开 Web 管理界面。RPC 端口虽可从局域网访问，但所有调用都需要密钥。
 
@@ -169,6 +174,11 @@ adb -s 192.168.3.115:5555 shell run-as com.termux \
       /data/data/com.termux/files/usr/bin/service-daemon start
 ```
 
+当前 rasp2 已部署 `z10pro-aria2-ensure.timer`，每两分钟通过带认证的 RPC
+检查一次。异常时由 Termux 的 `RunCommandService` 启动服务管理器；该方式要求
+`~/.termux/termux.properties` 包含 `allow-external-apps=true`。不要用 `adb root`
+恢复服务：它会重启 ADB 守护进程，并中断正在执行的 Zidoo 本机合并命令。
+
 ## 安全和容量
 
 - 不要把 RPC 密钥、SSH 私钥或 `authorized_keys` 内容提交到仓库。
@@ -185,10 +195,12 @@ ssh -p 8022 u0_a76@192.168.3.115 \
 
 ## 配置验证记录
 
-2026-09-14 已完成以下验证：
+已完成以下验证：
 
 - `aria2c` 版本 1.37.0，HTTPS 和 BitTorrent 功能可用。
 - `6800` 从 rasp2 可达，缺少正确密钥时无法调用 RPC。
 - 通过 RPC 添加 HTTPS 测试任务，文件成功写入外接硬盘。
 - 测试任务和测试文件已清理。
 - aria2 与 Termux SSH 均处于 runit 的 `run` 状态。
+- 2026-10-08 再次验证：带认证的夸克 HTTP 源可被 aria2 探测，aria2 能写入
+  `Downloads/aria2` 的多级暂存目录，ADB 同盘移动到 `Movie` 成功，测试文件已清理。
