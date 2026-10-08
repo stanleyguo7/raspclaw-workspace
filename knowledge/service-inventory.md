@@ -30,7 +30,7 @@
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
 | 夸克只读 HTTP 桥 | user systemd | 本机 `127.0.0.1:8787`；认证 LAN `192.168.3.119:8788` | `quark-rclone-http.service`、`quark-rclone-lan-http.service` | 本机桥供旧任务，LAN 桥供 Zidoo aria2 Range 读取；LAN 桥强制 Basic Auth |
-| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 新任务编排 Zidoo aria2，支持暂停续传、删除、Jellyfin 刷新与刮削；旧分片任务仍可恢复 |
+| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 新任务编排 Zidoo aria2，支持暂停、继续、取消、删除、Jellyfin 刷新与刮削；旧分片任务仍可恢复 |
 | Zidoo aria2 看门狗 | user systemd timer | 每 2 分钟 | `z10pro-aria2-ensure.timer` | 验证认证 RPC，异常时通过 Termux RunCommandService 恢复服务 |
 | Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
@@ -79,6 +79,7 @@
 - 整个任务遇到网络、I/O、挂载短暂中断等可恢复故障时，最多再重试 5 次，退避为 30、60、120、240、480 秒。
 - 权限错误、路径错误等需要人工处理的故障不会无限循环；修复后可在 FunHub 手动继续，已有分片会复用。
 - 任务状态持久化在 FunHub `data/downloads/jobs.json`；进程重启后，排队、下载、合并和等待重试的任务会重新进入队列。
+- 取消任务会向 Zidoo aria2 发送强制停止并清理对应 `.funhub-*` 临时目录；已完整移入 `Movie` 的文件不会被取消操作删除。
 - `stanley-funhub.service` 使用 `Restart=always`，异常退出 3 秒后重启；5 分钟最多拉起 5 次，避免故障重启风暴。
 - 大文件显示 100% 但状态为“合并”时，表示网盘分片已下完，正在 Zidoo 上生成最终文件；此时重启不会重下云端数据，但会让当前合并重新开始，应避免无必要重启。
 - 分片合并由 Zidoo 通过 ADB 在外接盘本机完成，不再由 rasp2 经 SMB 读回后写回；若本机合并失败，下载器会自动回退到 SMB 合并。
