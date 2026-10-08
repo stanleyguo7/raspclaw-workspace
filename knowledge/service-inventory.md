@@ -31,6 +31,7 @@
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
 | 夸克只读 HTTP 桥 | user systemd | 仅本机 `127.0.0.1:8787` | `quark-rclone-http.service` | 为下载管理器提供 Range 读取 |
 | 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 文件/文件夹下载、暂停续传、删除、Jellyfin 刷新与刮削；旧 8788 服务已停用 |
+| Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
 
@@ -74,6 +75,7 @@
 - 任务状态持久化在 FunHub `data/downloads/jobs.json`；进程重启后，排队、下载、合并和等待重试的任务会重新进入队列。
 - `stanley-funhub.service` 使用 `Restart=always`，异常退出 3 秒后重启；5 分钟最多拉起 5 次，避免故障重启风暴。
 - 大文件显示 100% 但状态为“合并”时，表示网盘分片已下完，正在 Zidoo 上生成最终文件；此时重启不会重下云端数据，但会让当前合并重新开始，应避免无必要重启。
+- rasp2 的夸克 VFS 缓存上限为 512 MiB，单流缓冲为 16 MiB；下载分片直接写入 Zidoo，不应把完整电影缓存到 rasp2 根盘。
 
 ### 音乐
 
