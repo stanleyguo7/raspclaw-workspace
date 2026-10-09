@@ -33,6 +33,7 @@
 | 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 内置愿望单和候选资源库；分享链接先递归检查视频、字幕、集数、体积及宣传垃圾，转存后再用 ffprobe 验证媒体流，通过后才编排 Zidoo aria2；支持暂停、继续、取消、删除；下载后刷新 Jellyfin，并用去分类字母/清晰度标记的中英文候选重试元数据，只有年份完全一致才自动应用；条目须同时有 TMDb ID 和主封面方视为完成；最终入库文件再抽检分辨率、编解码、时长、HDR 和 Swiftfin 转码风险并保存在完成任务中；旧分片任务仍可恢复 |
 | Zidoo aria2 看门狗 | user systemd timer | 每 2 分钟 | `z10pro-aria2-ensure.timer` | 验证认证 RPC，异常时通过 Termux RunCommandService 恢复服务 |
 | Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
+| Jellyfin 转码缓存清理 | user systemd timer | 每 6 小时 | `jellyfin-transcode-cleanup.timer` | 无活动 ffmpeg 时清理 Zidoo `.JellyfinTranscodes` 中超过 6 小时的残留分片 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
 
@@ -67,6 +68,7 @@
 
 - Jellyfin 不直接扫描夸克网盘，只扫描 Zidoo 本地文件。
 - 4K 播放优先直放；TrueHD/PGS 可能触发转码或字幕烧录，rasp2 不适合重型 4K 软件转码。
+- Jellyfin 的 HLS/转码目录映射到 Zidoo 外接盘隐藏目录 `.JellyfinTranscodes`；不要再映射到 4 GiB `/tmp`，单部影片预生成 HLS 分片即可写满 tmpfs，导致 Swiftfin 在 0 ms 退出并出现 `No space left on device`。
 
 ### 下载失败恢复
 
