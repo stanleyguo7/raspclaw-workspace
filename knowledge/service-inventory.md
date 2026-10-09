@@ -24,13 +24,13 @@
 | 服务 | 运行方式 | 入口/端口 | 主要数据或配置 | 说明 |
 |---|---|---|---|---|
 | OpenClaw Gateway | user systemd | 本机控制面；经 Tailscale 访问 | `~/.openclaw` | 当前智能助手主节点 |
-| Stanley FunHub | user systemd | 首页 `http://192.168.3.119:8790`；下载 `/downloads/` | `/home/guosq/workspace/stanley-funhub` | 娱乐资讯与夸克→Zidoo 下载的统一入口/进程 |
+| Stanley FunHub | user systemd | 首页 `http://192.168.3.119:8790`；下载 `/downloads/` | `/home/guosq/workspace/stanley-funhub` | 娱乐资讯与夸克→Zidoo 下载的统一入口/进程；首页统一搜索 Jellyfin、愿望单和每 6 小时更新的夸克 `movie/show` 缓存索引 |
 | Jellyfin | Docker，host 网络 | `http://192.168.3.119:8096` | `/home/guosq/services/jellyfin/config` | 只保留 Zidoo 本地媒体库；Swiftfin 客户端使用 |
 | Music Assistant | Docker，host 网络 | Web `8095`；Stream `8097`；附加端口 `8927` | workspace `services/music-assistant/data` | 音乐库与播放器编排 |
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
 | rclone | Docker | RC 仅本机 `127.0.0.1:5572` | `/home/guosq/rclone` | 云盘挂载与底层访问 |
 | 夸克只读 HTTP 桥 | user systemd | 本机 `127.0.0.1:8787`；认证 LAN `192.168.3.119:8788` | `quark-rclone-http.service`、`quark-rclone-lan-http.service` | 本机桥供旧任务，LAN 桥供 Zidoo aria2 Range 读取；LAN 桥强制 Basic Auth |
-| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 内置愿望单和候选资源库；分享链接先递归检查视频、字幕、集数、体积及宣传垃圾，转存后再用 ffprobe 验证媒体流，通过后才编排 Zidoo aria2；支持暂停、继续、取消、删除；下载后刷新 Jellyfin，并用去分类字母/清晰度标记的中英文候选重试元数据，只有年份完全一致才自动应用；条目须同时有 TMDb ID 和主封面方视为完成；旧分片任务仍可恢复 |
+| 夸克→Zidoo 下载模块 | FunHub 内置 WSGI 模块 | `http://192.168.3.119:8790/downloads/` | FunHub `downloads/` 与 `data/downloads/` | 内置愿望单和候选资源库；分享链接先递归检查视频、字幕、集数、体积及宣传垃圾，转存后再用 ffprobe 验证媒体流，通过后才编排 Zidoo aria2；支持暂停、继续、取消、删除；下载后刷新 Jellyfin，并用去分类字母/清晰度标记的中英文候选重试元数据，只有年份完全一致才自动应用；条目须同时有 TMDb ID 和主封面方视为完成；最终入库文件再抽检分辨率、编解码、时长、HDR 和 Swiftfin 转码风险并保存在完成任务中；旧分片任务仍可恢复 |
 | Zidoo aria2 看门狗 | user systemd timer | 每 2 分钟 | `z10pro-aria2-ensure.timer` | 验证认证 RPC，异常时通过 Termux RunCommandService 恢复服务 |
 | Zidoo 存储监控 | user systemd timer | 每 5 分钟 | `zidoo-storage-health.timer` | 检查 CIFS 挂载、真实写入与外接盘剩余空间；低于 200 GiB 告警 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
