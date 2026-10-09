@@ -24,7 +24,7 @@
 | 服务 | 运行方式 | 入口/端口 | 主要数据或配置 | 说明 |
 |---|---|---|---|---|
 | OpenClaw Gateway | user systemd | 本机控制面；经 Tailscale 访问 | `~/.openclaw` | 当前智能助手主节点 |
-| Stanley FunHub | user systemd | 首页 `http://192.168.3.119:8790`；下载 `/downloads/` | `/home/guosq/workspace/stanley-funhub` | 娱乐资讯与夸克→Zidoo 下载的统一入口/进程；首页统一搜索 Jellyfin、愿望单和每 6 小时更新的夸克 `movie/show` 缓存索引 |
+| Stanley FunHub | user systemd | 首页 `http://192.168.3.119:8790`；下载 `/downloads/` | `/home/guosq/workspace/stanley-funhub` | 家庭娱乐发现与夸克→Zidoo 下载的统一入口/进程；首页汇总 Netflix、爱奇艺和国内影视/综艺热榜，统一搜索 Jellyfin、愿望单和每 6 小时更新的夸克 `movie/show` 缓存索引 |
 | Jellyfin | Docker，host 网络 | `http://192.168.3.119:8096` | `/home/guosq/services/jellyfin/config` | 只保留 Zidoo 本地媒体库；Swiftfin 客户端使用 |
 | Music Assistant | Docker，host 网络 | Web `8095`；Stream `8097`；附加端口 `8927` | workspace `services/music-assistant/data` | 音乐库与播放器编排 |
 | AList | Docker | `http://192.168.3.119:5244` | `/home/guosq/alist/data` | 夸克目录访问支撑；不再作为 Jellyfin 直接媒体库 |
@@ -69,6 +69,12 @@
 - Jellyfin 不直接扫描夸克网盘，只扫描 Zidoo 本地文件。
 - 4K 播放优先直放；TrueHD/PGS 可能触发转码或字幕烧录，rasp2 不适合重型 4K 软件转码。
 - Jellyfin 的 HLS/转码目录映射到 Zidoo 外接盘隐藏目录 `.JellyfinTranscodes`；不要再映射到 4 GiB `/tmp`，单部影片预生成 HLS 分片即可写满 tmpfs，导致 Swiftfin 在 0 ms 退出并出现 `No space left on device`。
+
+### 娱乐发现与愿望单
+
+- FunHub 首页的“今天值得看”使用低频本地快照：Netflix 全球周榜、爱奇艺热播剧集/综艺，以及国内电影、剧集和综艺热门榜；支持平台、类型和家庭/成人筛选。
+- 数据由 `stanley-funhub/discovery.py` 每 6 小时后台更新到 `data/discovery_cache.json`；页面请求只读缓存。某个上游失败时继续保留该来源的最后一次成功结果，不影响其他来源和下载服务。
+- 推荐卡包含评分/热度、更新信息、推荐理由及官方观看或资料页；“加入愿望单”会复用现有候选资源和夸克预检/下载流程。
 
 ### 下载失败恢复
 
