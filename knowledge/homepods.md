@@ -1,6 +1,6 @@
 # HomePod 设备与访问基线
 
-最后核对：2026-09-30
+最后核对：2026-10-11
 
 本文记录家中 HomePod mini 的位置、Home Assistant 与 Music Assistant 访问方式。不得记录 Apple 账户、密码、Token 或 HomeKit 配对密钥。
 
@@ -47,3 +47,10 @@
 - 全屋同步对无线网络和设备在线状态敏感；关键提醒不应只依赖同步组。
 - 新自动化先在一台 HomePod、小音量、白天时段测试，再扩大到同步组。
 - 儿童房和卧室应设置静默时段；燃气、水浸等严重事件可例外，但仍要避免过高音量。
+
+## 本地提示音的可靠播放路径
+
+- HomePod OS 27 下，Music Assistant 2.9.0b9 自动选择的 AirPlay 1/RAOP 会出现 `404 auth-setup failed`；强制 AirPlay 2 又会返回 `403 Forbidden`。因此安全提示音暂不走 Music Assistant 同步组。
+- 已完成配对的 HA 官方 Apple TV 实体可以可靠播放本地音频。主卧使用 `media_player.f2zhu_wo_f2zhu_wo`。
+- 音频应放在 HA `media_dirs` 映射的 `/config/media`，并以 `media-source://media_source/local/...` 调用；直接把 `/local/...` HTTP URL交给 Apple TV 集成的 `stream_file` 会导致 `miniaudio` 解码/读取失败。
+- 2026-10-11 快递首次到达提示已改为主卧原生实体播放 `media-source://media_source/local/audio/package-arrival.wav`，仅在 08:00–22:00 执行，每批快递只触发一次。
