@@ -1,6 +1,6 @@
 # 家庭服务权威清单
 
-更新时间：2026-10-08 11:00（Asia/Shanghai）
+更新时间：2026-10-11 10:05（Asia/Shanghai）
 
 本文件记录当前实际运行的服务位置、依赖和恢复顺序。密码、令牌、Cookie 与配对码不写入仓库。
 
@@ -36,6 +36,7 @@
 | Jellyfin 转码缓存清理 | user systemd timer | 每 6 小时 | `jellyfin-transcode-cleanup.timer` | 无活动 ffmpeg 时清理 Zidoo `.JellyfinTranscodes` 中超过 6 小时的残留分片 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
+| 院门物品监测 | system systemd | `http://192.168.3.119:8791` | `/home/guosq/services/front-gate-package-monitor` | 非 AI 固定区域背景差分，每 10 秒一帧；需在台阶空场时人工校准基准图 |
 
 ### iStoreOS — 网络与 IPTV（192.168.3.253）
 
@@ -61,6 +62,14 @@
 - 易来使用 4 个本地 Yeelight Pro 网关。
 - Xiaomi Miot 云轮询已放宽，避免云端超时拖垮 HA。
 - HomeKit 全部“正在更新”时，先检查 HA API 延迟/CPU，再检查桥端口，不要先重配 Apple Home。
+
+### 院门物品监测
+
+`前院门口摄像头子码流 → rasp2 传统 OpenCV 差分 → HTTP 状态/标注快照 → Home Assistant`
+
+- 只检测左上方台阶固定区域内是否出现持续新物体，不进行快递、外卖、人或动物的语义分类。
+- 空场基准必须由人工执行 `calibrate.sh`，服务不会自动覆盖；当前由于台阶已有物品，状态为 `calibration_required`。
+- HA 每 30 秒读取状态，小院页面卡片可打开标注快照；试运行阶段只展示、不联动门锁、灯光或通知。
 
 ### 本地影视
 
@@ -133,6 +142,7 @@ curl -fsS http://127.0.0.1:8096/System/Info/Public >/dev/null
 curl -fsS http://127.0.0.1:8095/ >/dev/null
 curl -fsS http://127.0.0.1:8790/ >/dev/null
 curl -fsS http://127.0.0.1:8790/downloads/health >/dev/null
+curl -fsS http://127.0.0.1:8791/api/status
 systemctl --user status ha-backup-sync.timer
 ```
 
