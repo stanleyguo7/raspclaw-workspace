@@ -36,7 +36,7 @@
 | Jellyfin 转码缓存清理 | user systemd timer | 每 6 小时 | `jellyfin-transcode-cleanup.timer` | 无活动 ffmpeg 时清理 Zidoo `.JellyfinTranscodes` 中超过 6 小时的残留分片 |
 | Docker Registry | system service | `5000` | 系统 registry 配置 | 局域网镜像缓存/仓库 |
 | HA 异机备份同步 | user timer | 每日约 `06:15` | `~/.local/bin/ha-backup-sync.sh` | 从 rasp 同步受保护备份到 Zidoo |
-| 院门物品监测 | system systemd + HA 自动化 | `http://192.168.3.119:8791` | `/home/guosq/services/front-gate-package-monitor`；HA `packages/front_gate_package_monitor.yaml` | 非 AI 固定区域背景差分，每 10 秒一帧；使用最多 8 张不同时段的人工确认空场基准，并选取差异最小者，降低早晚光影误报。HA 对稳定的到达/取走状态分别记录时间、摄像头截图和日志；在家模式静默留档，旅行模式在 08:00-22:00 推送到达通知，持续 12 小时未取再提醒一次 |
+| 院门物品监测 | system systemd + HA 自动化 | `http://192.168.3.119:8791` | `/home/guosq/workspace/stanley-rasp2/services/front-gate-package-monitor`；HA `packages/front_gate_package_monitor.yaml` | 非 AI 固定区域背景差分，常规每 120 秒一帧；NVR 频道 11 移动或院门门铃事件触发 90 秒快速窗口（每 10 秒一帧）。使用最多 24 张空场基准并覆盖白天/傍晚/夜间光照；HA 对稳定的到达/取走状态分别记录时间、截图和日志，在家模式静默留档，旅行模式在 08:00-22:00 推送到达通知，持续 12 小时未取再提醒一次 |
 
 ### iStoreOS — 网络与 IPTV（192.168.3.253）
 
