@@ -35,6 +35,14 @@
 - `.81` 原独立 Generic Camera 已去除，HA 看板和 HomeKit 均改用 NVR 频道 13。
 - 通道 8、9 来自同一台双画面/云台摄像机，但属于两个独立画面。
 
+## 院门门铃轮询策略
+
+- `DS-KVJ203` 的 `callStatus` 查询需要 Digest 认证握手；持续高频查询可能与室内机原生呼叫争用设备资源。
+- 自 2026-10-12 起，HA 的 `hikvision_intercom` 仅在 `input_select.home_mode` 为“旅行”时每 10 秒轮询；“在家”和“睡眠”模式不做定时轮询。
+- 非旅行模式下，NVR 频道 13 的画面和录像不受影响，但 HA 不保证记录每次按铃事件；原生室内机呼叫优先。
+- 切换到旅行模式时会立即查询一次并开始轮询，退出旅行模式后立即停止。
+- 变更备份：`/home/guosq/ha-backups/hikvision-travel-polling-20261012-0934`；`stanley-ha` 提交 `801f5ce`。
+
 ## HA 与 HomeKit 清理结果
 
 - HA 监控看板和 HomeKit `HA Surveillance` 当前均只使用 NVR 频道 1–13。
