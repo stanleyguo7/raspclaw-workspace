@@ -1,5 +1,11 @@
 # Home Assistant 故障监控与恢复策略
 
+## 2026-10-13 天气通知降噪
+
+- 天气服务异常与恢复仅保留在 `binary_sensor.external_data_services_healthy` 汇总状态中，不再向手机推送。
+- 米家云通知的异常与恢复触发均只监听 `binary_sensor.xiaomi_cloud_representatives_healthy`，避免天气恢复误触发“米家云数据服务已恢复”。
+- 修改前备份：rasp `/home/guosq/ha-backups/weather-notifications-20261013-1525/`；`stanley-ha` 提交 `7a890fd`。
+
 ## 2026-10-09 安全检查与降噪
 
 - HA 核心、HomeKit、4 个 Yeelight 网关、6 个小米网关、13 路 NVR 摄像头及关键安全实体均正常。
