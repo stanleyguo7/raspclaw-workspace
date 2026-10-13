@@ -227,7 +227,7 @@ def main() -> int:
             service("homeassistant", "reload_config_entry", {"entry_id": WEATHER_ENTRY_ID})
             mark_action(state, "weather_shunyi", now)
             state["counters"]["weather_shunyi"] = 0
-            notify("天气服务自动恢复", "顺义天气连续不可用，已安全重载天气配置项。")
+            log("weather_reloaded", entity_id="weather.shunyi", notification_sent=False)
 
     missing_ports = [port for port in HOMEKIT_PORTS if not tcp_open("192.168.3.254", port)]
     count = bump(state, "homekit", bool(missing_ports))

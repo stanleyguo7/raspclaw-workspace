@@ -4,6 +4,7 @@
 
 - 天气服务异常与恢复仅保留在 `binary_sensor.external_data_services_healthy` 汇总状态中，不再向手机推送。
 - 米家云通知的异常与恢复触发均只监听 `binary_sensor.xiaomi_cloud_representatives_healthy`，避免天气恢复误触发“米家云数据服务已恢复”。
+- rasp2 外部看门狗继续在天气连续不可用时自动重载天气配置项，但只写系统日志，不再调用手机通知。
 - 修改前备份：rasp `/home/guosq/ha-backups/weather-notifications-20261013-1525/`；`stanley-ha` 提交 `7a890fd`。
 
 ## 2026-10-09 安全检查与降噪
